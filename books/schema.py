@@ -58,14 +58,18 @@ class QuizType(DjangoObjectType):
 
 
 class QuizQuery(graphene.ObjectType):
-    allQuizs = graphene.List(QuizType,title=graphene.String())
+    allQuizs = graphene.List(QuizType)
+    filterQuizs = graphene.List(QuizType,title=graphene.String())
     singleQuiz = graphene.Field(QuizType,id=graphene.Int())
     
-    def resolve_allQuizs(root,info,title=None):
-      if title :
+    def resolve_allQuizs(root,info):
+        return Quiz.objects.filter.all()
+    
+    def resolve_filterQuizs(root,info,title):
+      try :
         return Quiz.objects.filter(title__contains = title)
-      else :
-        Quiz.objects.all()
+      except :
+        return []
     
     def resolve_singleQuiz(root,info,id):
         return Quiz.objects.get(id =id)
